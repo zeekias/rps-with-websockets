@@ -3,6 +3,7 @@ import styled from "styled-components";
 interface iOption {
   color: string;
   size: string;
+  gridArea: string;
 }
 
 interface iOptionContainer {
@@ -18,11 +19,15 @@ export const OptionsContainer = styled.div<iOptionContainer>`
   position: relative;
   gap: 20px;
   .options {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
+    display: grid;
+    place-items: center;
+    grid-template-areas:
+    ". scissor scissor ."
+    "spock spock paper paper" 
+    " . lizard rock  .";
+
+    column-gap: 60px;
+    row-gap: 20px;
   }
   .user-option,
   .house-option,
@@ -144,6 +149,7 @@ export const OptionsContainer = styled.div<iOptionContainer>`
 export const Option = styled.div<iOption>`
   width: ${(props) => `${props.size}`};
   height: ${(props) => `${props.size}`};
+  grid-area: ${(props) => `${props.gridArea}`};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -160,7 +166,8 @@ export const Option = styled.div<iOption>`
   }
 
   @media (max-width: 688px) {
-    width: 150px;
-    height: 150px;
+    width: 100px;
+    height: 100px;
+    border: ${(props) => `8px solid ${props.color}`};
   }
 `;

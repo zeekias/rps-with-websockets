@@ -26,7 +26,7 @@ io.on("connect", (socket) => {
         roomsInServer.push({roomId: data.connectionId, roomInfo: []});
         currentRoomId = roomsInServer.findIndex(
             (room) => room.roomId === data.connectionId
-          );
+          ); 
     }
     const userIndex = roomsInServer[currentRoomId].roomInfo.findIndex((user)=>user.id === data.id);
 
@@ -34,7 +34,9 @@ io.on("connect", (socket) => {
       roomsInServer[currentRoomId].roomInfo[userIndex] = data; 
     }
     else{
-      roomsInServer[currentRoomId].roomInfo.push(data);
+      if(roomsInServer[currentRoomId].roomInfo.length < 2){
+        roomsInServer[currentRoomId].roomInfo.push(data);
+      }
     }
     io.emit(`${roomsInServer[currentRoomId].roomId}`, roomsInServer[currentRoomId].roomInfo);
   });
@@ -46,12 +48,12 @@ io.on("connect", (socket) => {
 
   socket.on("play.again", (data) => {
     console.log("[SOCKET] PLAY AGAIN IN ROOM  ==> ", data);
-    let currentRoomId = roomsInServer.findIndex(
-      (room) => room.roomId === data.connectionId
-    );
-    roomsInServer[currentRoomId].roomInfo.length = 0;
-    console.log(`reset.${roomsInServer[currentRoomId].roomId}`, roomsInServer[currentRoomId].roomInfo);
-    io.emit(`reset.${roomsInServer[currentRoomId].roomId}`, roomsInServer[currentRoomId].roomInfo);
+    if(data.connectionId){ 
+      let currentRoomId = roomsInServer.findIndex((room) => room.roomId === data.connectionId);
+        roomsInServer[currentRoomId].roomInfo.length = 0;
+        console.log(`reset.${roomsInServer[currentRoomId].roomId}`, roomsInServer[currentRoomId].roomInfo);
+        io.emit(`reset.${roomsInServer[currentRoomId].roomId}`, roomsInServer[currentRoomId].roomInfo);
+    }
   });
 
   socket.on("disconnect", () => { 

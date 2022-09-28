@@ -56,22 +56,41 @@ export default function Options() {
           <OptionsContainer width="450px">
           <div className="options">
             <Option
-              color="hsl(230, 89%, 62%)"
-              size="150px"
-              onClick={() => handleShow(1)}
-            >
-              <img src="/images/icon-paper.svg" alt="Paper" />
-            </Option>
-            <Option
+              gridArea="scissor"
               color="hsl(39, 89%, 49%)"
-              size="150px"
+              size="130px"
               onClick={() => handleShow(2)}
             >
               <img src="/images/icon-scissors.svg" alt="Scissors" />
             </Option>
             <Option
+              gridArea="spock"
+              color="hsl(190, 63%, 68%)"
+              size="130px"
+              onClick={() => handleShow(4)}
+            >
+              <img src="/images/icon-spock.svg" alt="Paper" />
+            </Option>
+            <Option
+              gridArea="paper"
+              color="hsl(230, 89%, 62%)"
+              size="130px"
+              onClick={() => handleShow(1)}
+            >
+              <img src="/images/icon-paper.svg" alt="Paper" />
+            </Option>
+            <Option
+              gridArea="lizard"
+              color="hsl(257, 49%, 51%)"
+              size="130px"
+              onClick={() => handleShow(5)}
+            >
+              <img src="/images/icon-lizard.svg" alt="Paper" />
+            </Option>
+            <Option
+              gridArea="rock"
               color="hsl(349, 71%, 52%)"
-              size="150px"
+              size="130px"
               onClick={() => handleShow(3)}
             >
               <img src="/images/icon-rock.svg" alt="Rock" />

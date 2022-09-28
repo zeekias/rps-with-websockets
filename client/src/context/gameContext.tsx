@@ -5,15 +5,17 @@ const myId = uid();
 localStorage.setItem("USER_ID", myId);
 
 const socket = io("http://localhost:8080");
-  socket.on("connect", () => console.log("[IO] Connect => A new connection has been established"));
+socket.on("connect", () =>
+  console.log("[IO] Connect => A new connection has been established")
+);
 
 interface iUser {
   optionPicked: { localColor: string; imgSrc: string; id: number };
 }
 
-interface iOption{
-  id: string,
-  userOption: { localColor: string; imgSrc: string; id: number }
+interface iOption {
+  id: string;
+  userOption: { localColor: string; imgSrc: string; id: number };
 }
 interface iResult {
   winner: number;
@@ -29,8 +31,8 @@ interface IGameContext {
   handleUserOption: (optionPickedByUser: number) => void;
   verifyWinner: (gameOptions: iOption[]) => void;
   handleHouseOption: () => void;
-  playAgain: ()=>void;
-  createNewRoom: (pageId: string)=>void;
+  playAgain: () => void;
+  createNewRoom: (pageId: string) => void;
 }
 
 const initialValue = {
@@ -46,8 +48,8 @@ const initialValue = {
   handleUserOption: () => {},
   verifyWinner: () => {},
   handleHouseOption: () => {},
-  playAgain: ()=>{},
-  createNewRoom: (pageId: string)=>{}
+  playAgain: () => {},
+  createNewRoom: (pageId: string) => {},
 };
 
 interface IProps {
@@ -84,25 +86,40 @@ export const GameContextProvider = ({ children }: IProps) => {
         userOption.localColor = "hsl(349, 71%, 52%)";
         userOption.imgSrc = "/images/icon-rock.svg";
         break;
+      case 4:
+        userOption.localColor = "hsl(190, 63%, 68%)";
+        userOption.imgSrc = "/images/icon-spock.svg";
+        break;
+      case 5:
+        userOption.localColor = "hsl(257, 49%, 51%)";
+        userOption.imgSrc = "/images/icon-lizard.svg";
+        break;
       default:
         userOption.localColor = "";
         userOption.imgSrc = "";
     }
     setUser({ optionPicked: userOption });
-    if(gameUrl.length>4){
-      socket.emit("option.choosed", { id: myId, userOption, connectionId: gameUrl[gameUrl.length-1] });
+    if (gameUrl.length > 4) {
+      socket.emit("option.choosed", {
+        id: myId,
+        userOption,
+        connectionId: gameUrl[gameUrl.length - 1],
+      });
       return;
     }
     const houseOption = handleHouseOption();
-    setGameOptions([{id:myId, userOption}, {id:uid(), userOption: houseOption}]);
+    setGameOptions([
+      { id: myId, userOption },
+      { id: uid(), userOption: houseOption },
+    ]);
   };
 
-  function createNewRoom(pageId: string){
-    socket.emit("create.room", {roomId: pageId, roomInfo: []});
+  function createNewRoom(pageId: string) {
+    socket.emit("create.room", { roomId: pageId, roomInfo: [] });
   }
 
   const handleHouseOption = () => {
-    const randomOption = Math.floor(Math.random() * 3 + 1);
+    const randomOption = Math.floor(Math.random() * 5 + 1);
     const userOption = { localColor: "", imgSrc: "", id: randomOption };
     switch (randomOption) {
       case 1:
@@ -117,59 +134,80 @@ export const GameContextProvider = ({ children }: IProps) => {
         userOption.localColor = "hsl(349, 71%, 52%)";
         userOption.imgSrc = "/images/icon-rock.svg";
         break;
+      case 4:
+        userOption.localColor = "hsl(190, 63%, 68%)";
+        userOption.imgSrc = "/images/icon-spock.svg";
+        break;
+      case 5:
+        userOption.localColor = "hsl(257, 49%, 51%)";
+        userOption.imgSrc = "/images/icon-lizard.svg";
+        break;
     }
     setHouse({ optionPicked: userOption });
     return userOption;
   };
 
-  function playAgain(){
+  function playAgain() {
     const gameUrl = window.location.href.split("/");
     setGameOptions([]);
-    socket.emit(`play.again`, {connectionId: gameUrl[gameUrl.length-1]} );
+    if(gameUrl.length < 5) return;
+    socket.emit(`play.again`, { connectionId: gameUrl[gameUrl.length - 1] });
   }
 
   function verifyWinner(gameOptions: iOption[]) {
-    const userIndex = gameOptions.findIndex((option)=>option.id===myId);
-    const houseIndex = gameOptions.findIndex((option)=>option.id!==myId);
+    const userIndex = gameOptions.findIndex((option) => option.id === myId);
+    const houseIndex = gameOptions.findIndex((option) => option.id !== myId);
     const userOption = gameOptions[userIndex].userOption.id;
-    const houseOption = gameOptions[houseIndex].userOption.id;;
+    const houseOption = gameOptions[houseIndex].userOption.id;
     if (userOption === -1) return;
     if (userOption === houseOption) {
       setResult({ winner: 0, info: "TIE" });
       return;
     }
-    if (userOption === 1 && houseOption === 2) {
+    console.log("USER: ", userOption, "House: ", houseOption);
+    let isAWin = true;
+    switch (userOption) {
+      //Paper
+      case 1:
+        if (houseOption === 2 || houseOption === 5) isAWin = false;
+        break;
+      //Scissor
+      case 2:
+        if (houseOption === 3 || houseOption === 4) isAWin = false;
+        break;
+      //Rock
+      case 3:
+        if (houseOption === 4 || houseOption === 1) isAWin = false;
+        break;
+      //Spock
+      case 4:
+        if (houseOption === 5 || houseOption === 1) isAWin = false;
+        break;
+      //Lizard
+      case 5:
+        if (houseOption === 2 || houseOption === 3) isAWin = false;
+        break;
+    }
+    if (!isAWin) {
       setResult({ winner: 2, info: "YOU LOSE" });
       setScore(0);
       return;
     }
-    if (userOption === 2 && houseOption === 3) {
-      setResult({ winner: 2, info: "YOU LOSE" });
-      setScore(0);
-      return;
-    }
-    if (userOption === 3 && houseOption === 1) {
-      setResult({ winner: 2, info: "YOU LOSE" });
-      setScore(0);
-      return;
-    }
-
     setResult({ winner: 1, info: "YOU WIN" });
     setScore(score + 1);
     return;
   }
   useEffect(() => {
-      const gameUrl = window.location.href.split("/");
-      const handleNewOption = (newOption: iOption[]) => {
-          setGameOptions([...newOption]);
-      };
-      socket.on(`${gameUrl[gameUrl.length-1]}`, handleNewOption);
-      socket.on(`reset.${gameUrl[gameUrl.length-1]}`, handleNewOption);
-      return () => {
-        socket.off(`${gameUrl[gameUrl.length-1]}`, handleNewOption);
-        socket.off(`reset.${gameUrl[gameUrl.length-1]}`, handleNewOption);
-      }
-      
+    const gameUrl = window.location.href.split("/");
+    const handleNewOption = (newOption: iOption[]) => {
+      setGameOptions([...newOption]);
+    };
+    socket.on(`${gameUrl[gameUrl.length - 1]}`, handleNewOption);
+    socket.on(`reset.${gameUrl[gameUrl.length - 1]}`, handleNewOption);
+    return () => {
+      socket.off(`${gameUrl[gameUrl.length - 1]}`, handleNewOption);
+      socket.off(`reset.${gameUrl[gameUrl.length - 1]}`, handleNewOption);
+    };
   }, [user, gameOptions]);
   return (
     <GameContext.Provider
@@ -184,7 +222,7 @@ export const GameContextProvider = ({ children }: IProps) => {
         score,
         gameOptions,
         playAgain,
-        createNewRoom
+        createNewRoom,
       }}
     >
       {children}

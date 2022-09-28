@@ -12,7 +12,7 @@ export const ScoreContainer = styled.div`
   width: 20%;
   background-color: white;
   h2 {
-    font-size: 4.5em;
+    font-size: 3.5em;
     color: hsl(229, 25%, 31%);
   }
   span {

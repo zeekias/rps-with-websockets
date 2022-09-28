@@ -8,9 +8,8 @@ interface iProps{
 export const Rules: React.FC<iProps> = ({handleShowRules})=> {
   return (
     <RulesContent>
-      <h2>RULES</h2>
-      <img src="/images/image-rules.svg" alt="Rules" />
-      <button onClick={()=>handleShowRules()}>X</button>
+      <h2>RULES <button onClick={()=>handleShowRules()}>X</button></h2>
+      <img src="/images/image-rules-bonus.svg" alt="Rules" />
     </RulesContent>
   );
 }

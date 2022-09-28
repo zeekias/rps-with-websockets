@@ -10,7 +10,7 @@ export const GlobalStyle = createGlobalStyle`
     color: white;
 
     h1{
-      font-size: 42px;
+      font-size: 32px;
       letter-spacing: .09em;
     }
 

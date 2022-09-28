@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Main from "../pages/main";
-import GameOnline from "../pages/gameOnline";
 import { GlobalStyle } from "../styles/GlobalStyles";
 import { GameContextProvider } from "../context/gameContext";
 
@@ -11,7 +10,7 @@ export const RoutesApp: React.FC = () => {
         <GlobalStyle />
         <Routes>
           <Route element={<Main />} path="/" />
-          <Route element={<GameOnline />} path="/play/:id" />
+          <Route element={<Main />} path="/play/:id" />
         </Routes>
       </GameContextProvider>
     </BrowserRouter>

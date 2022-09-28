@@ -7,6 +7,7 @@ import { GameContext } from "../../context/gameContext";
 import { Container, RulesContainer } from "./styles";
 
 export default function Main() {
+  const gameUrl = window.location.href.split("/");
   const { createNewRoom } = useContext(GameContext);
   const pageId = uid();
 
@@ -20,7 +21,9 @@ export default function Main() {
     <Container>
         {showRules ? <Rules handleShowRules={handleShowRules} /> : <></>}
         <TitleAndScore />
-        <a href={`/play/${pageId}`} onClick={()=>createNewRoom(pageId)}>ONLINE GAME</a>
+        {
+          gameUrl.length < 5 && <a href={`/play/${pageId}`} onClick={()=>createNewRoom(pageId)}>ONLINE GAME</a>
+        }
         <Options />
         <RulesContainer>
           <button onClick={()=>handleShowRules()}>RULES</button>

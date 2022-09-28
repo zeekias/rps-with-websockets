@@ -7,7 +7,7 @@ export const ContainerTitleAndScore = styled.div`
   justify-content: space-between;
   border: 2px solid white;
   border-radius: 12px;
-  padding: 20px;
+  padding: 10px;
 
   @media (max-width: 688px) {
     width: 80%;
